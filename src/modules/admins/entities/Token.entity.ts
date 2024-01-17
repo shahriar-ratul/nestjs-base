@@ -1,9 +1,11 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
 import { Admin } from "./Admin.entity";
@@ -29,11 +31,11 @@ export class Token {
 
   @ApiProperty({ type: "varchar", description: "token user agent" })
   @Column({ nullable: true })
-  user_agent: string;
+  userAgent: string;
 
   @ApiProperty({ type: "varchar", description: "token expires at" })
   @Column()
-  expires_at: Date;
+  expiresAt: Date;
 
   @ApiProperty({ type: "varchar", description: "token revoked" })
   @Column({ default: false })
@@ -41,17 +43,22 @@ export class Token {
 
   @ApiProperty({ type: "varchar", description: "token revoked at" })
   @Column({ nullable: true })
-  revoked_at: Date;
+  revokedAt: Date;
 
   @ApiProperty({ type: "varchar", description: "token revoked by ip" })
   @Column({ nullable: true })
-  revoked_by_ip: string;
+  revokedByIp: string;
 
   @ApiProperty({ type: "varchar", description: "token revoked by user agent" })
   @Column({ nullable: true })
-  revoked_by_user_agent: string;
+  revokedByUserAgent: string;
 
-  @ApiProperty({ type: "varchar", description: "token created at" })
-  @Column()
-  created_at: Date;
+
+  @ApiProperty({ description: 'When user was created' })
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ApiProperty({ description: 'When user was updated' })
+  @UpdateDateColumn()
+  updatedAt: Date;
 }

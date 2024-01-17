@@ -6,6 +6,7 @@ import { config } from 'dotenv';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import * as cookieParser from 'cookie-parser';
 import { setupSwagger } from './common/utils';
+import { join } from 'path';
 
 async function bootstrap() {
   // Load environment variables from .env file
@@ -24,7 +25,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useBodyParser('json', { limit: '20mb' });
 
-
+  app.useStaticAssets(join(__dirname, '..', 'public'));
   // cors
   app.enableCors({
     origin: "*",
@@ -60,8 +61,8 @@ async function bootstrap() {
     defaultVersion: VERSION_NEUTRAL,
   });
 
-  console.log('process.env.APP_DEBUG', process.env.APP_DEBUG);
-  logger.log(`process.env.APP_DEBUG ${process.env.APP_DEBUG}`);
+  // console.log('process.env.APP_DEBUG', process.env.APP_DEBUG);
+  // logger.log(`process.env.APP_DEBUG ${process.env.APP_DEBUG}`);
   // docs
   if (app_debug === 'true') {
     // Swagger

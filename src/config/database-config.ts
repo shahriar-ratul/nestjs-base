@@ -12,8 +12,8 @@ const databaseConfig: DataSourceOptions = {
   // schema: process.env.DB_SCHEMA,
   entities: [__dirname + "/../modules/**/*.entity.{js,ts}"],
   migrations: [__dirname + "/../database/migrations/*{.ts,.js}"],
-  synchronize: false, // process.env.DB_SYNC === "true" ? true : false,
-  logging: false, // process.env.DB_LOGGING === "true" ? true : false,
+  synchronize: process.env.DB_SYNC === "true" ? true : false,
+  logging: true, // process.env.DB_LOGGING === "true" ? true : false,
   migrationsRun: process.env.DB_MIGRATIONS_RUN === "true" ? true : false,
 };
 

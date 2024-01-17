@@ -65,7 +65,7 @@ export class AuthController {
         throw new Error("Password is incorrect");
       }
 
-      if (user.base.is_active == false) {
+      if (user.isActive == false) {
         throw new Error("Your Have Been Blocked. Please Contact Admin");
       }
 

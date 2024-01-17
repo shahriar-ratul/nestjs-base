@@ -7,8 +7,7 @@ import { AdminsService } from "../admins/admin/admins.service";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "./dto/login.dto";
 import { TokenService } from "../admins/token/token.service";
-import { response } from "express";
-import { UsersService } from "../users/users.service";
+
 
 @Injectable()
 export class AuthService {
@@ -16,7 +15,6 @@ export class AuthService {
     private adminsService: AdminsService,
     private jwtService: JwtService,
     private tokenService: TokenService,
-    private userService: UsersService,
   ) {}
 
   async login(credential: LoginDto, request): Promise<any> {
@@ -62,10 +60,10 @@ export class AuthService {
     //   httpOnly: true,
     // });
 
-    response.cookie("access_token", token, {
-      httpOnly: true,
-      expires: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
-    });
+    // response.cookie("access_token", token, {
+    //   httpOnly: true,
+    //   expires: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
+    // });
 
     return { access_token: token };
 

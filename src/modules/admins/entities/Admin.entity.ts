@@ -1,11 +1,14 @@
-import { BaseOrmEntity } from "@/common/helpers/BaseOrmEntity";
+// import { BaseOrmEntity } from "@/common/helpers/BaseOrmEntity";
 import {
+  BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
 import { Role } from "./Role.entity";
@@ -14,7 +17,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Token } from "./Token.entity";
 
 @Entity({ name: "admins" })
-export class Admin {
+export class Admin extends BaseEntity {
   @ApiProperty({ type: "integer", description: "admin id" })
   @PrimaryGeneratedColumn()
   id: number;
@@ -37,8 +40,8 @@ export class Admin {
   @Column()
   password: string;
 
-  @Column(() => BaseOrmEntity, { prefix: false })
-  base: BaseOrmEntity;
+  // @Column(() => BaseOrmEntity, { prefix: false })
+  // base: BaseOrmEntity;
 
 
   // permissions: Permission[];
@@ -73,5 +76,18 @@ export class Admin {
 
   @OneToMany(() => Token, token => token.admin)
   tokens: Token[];
+
+  @ApiProperty({ type: "boolean", description: "item is active or not" })
+  @Column({ default: true })
+  isActive: boolean;
+  
+
+  @ApiProperty({ description: 'When user was created' })
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ApiProperty({ description: 'When user was updated' })
+  @UpdateDateColumn()
+  updatedAt: Date;
 
 }

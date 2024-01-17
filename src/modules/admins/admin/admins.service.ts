@@ -96,13 +96,8 @@ export class AdminsService {
       username: createAdminDto.username,
       phone: createAdminDto.phone,
       password: password,
-    
-
-      base: {
-        is_active: createAdminDto.is_active,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
+      isActive: createAdminDto.is_active,
+      
     });
 
     const role = await this._roleRepository.find({
@@ -203,8 +198,7 @@ export class AdminsService {
       const password = await hash(updateAdminDto.password, 15);
       admin.password = password;
     }
-    admin.base.updated_at = new Date();
-    admin.base.is_active = is_active;
+    admin.isActive = is_active;
 
     if (updateAdminDto.roles.length > 0) {
       admin.roles = [];
@@ -265,7 +259,7 @@ export class AdminsService {
       throw new HttpException("Admin not found", HttpStatus.BAD_REQUEST);
     }
 
-    admin.base.is_active = !admin.base.is_active;
+    admin.isActive = !admin.isActive;
 
     await this._adminRepository.save(admin);
 
@@ -326,7 +320,7 @@ export class AdminsService {
   // getAllAdmins
   async getAllAdmins() {
     const items = await this._adminRepository.find({
-      where: { base: { is_active: true } },
+      where: {  isActive: true  },
     });
 
     return {

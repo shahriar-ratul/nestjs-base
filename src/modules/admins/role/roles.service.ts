@@ -81,12 +81,10 @@ export class RolesService {
 
     const role = await this._roleRepository.create({
       name: createRoleDto.name,
-      slug: slug,
-      base: {
-        is_active: createRoleDto.is_active,
-        created_at: new Date(),
-        updated_at: new Date(),
-      },
+      slug: slug, 
+      isActive: createRoleDto.is_active,
+     
+      
     });
 
     // console.log(createRoleDto.permissions);
@@ -126,8 +124,7 @@ export class RolesService {
 
     role.name = updateRoleDto.name;
     role.slug = slug;
-    role.base.is_active = updateRoleDto.is_active;
-    role.base.updated_at = new Date();
+    role.isActive = updateRoleDto.is_active;
 
     role.permissions = [];
     await this._roleRepository.save(role);
@@ -192,7 +189,7 @@ export class RolesService {
       throw new HttpException("Role not found", HttpStatus.BAD_REQUEST);
     }
 
-    role.base.is_active = !role.base.is_active;
+    role.isActive = !role.isActive;
 
     await this._roleRepository.save(role);
 
@@ -206,9 +203,7 @@ export class RolesService {
     const roles = await this._roleRepository.find({
       // relations: ["permissions"],
       where: {
-        base: {
-          is_active: true,
-        },
+          isActive: true,
       },
     });
 

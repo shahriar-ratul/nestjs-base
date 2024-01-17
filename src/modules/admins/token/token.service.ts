@@ -17,10 +17,10 @@ export class TokenService {
 
     token.token = createTokenDto.token;
     token.ip = createTokenDto.ip;
-    token.user_agent = createTokenDto.userAgent;
-    token.expires_at = createTokenDto.expires_at;
+    token.userAgent = createTokenDto.userAgent;
+    token.expiresAt = createTokenDto.expires_at;
     token.admin = createTokenDto.admin;
-    token.created_at = new Date();
+    token.createdAt = new Date();
 
     return await this.tokenRepository.save(token);
   }

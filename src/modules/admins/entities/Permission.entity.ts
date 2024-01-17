@@ -1,17 +1,20 @@
 import { ApiProperty } from "@nestjs/swagger";
 import {
+  BaseEntity,
   Column,
+  CreateDateColumn,
   Entity,
   JoinTable,
   ManyToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from "typeorm";
 
 import { Admin } from "./Admin.entity";
 import { Role } from "./Role.entity";
 
 @Entity({ name: "permissions" })
-export class Permission {
+export class Permission extends BaseEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -54,4 +57,13 @@ export class Permission {
     },
   })
   roles: Role[];
+
+
+  @ApiProperty({ description: 'When user was created' })
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @ApiProperty({ description: 'When user was updated' })
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
