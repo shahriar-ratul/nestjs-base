@@ -7,7 +7,6 @@ import { AdminsModule } from "../admins/admins.module";
 import "dotenv/config";
 import { AbilityFactory } from "./ability/ability.factory";
 import { JwtStrategy } from "./strategies/jwt-strategy";
-import { LocalStrategy } from "./strategies/local-strategy";
 import { RefreshJwtStrategy } from "./strategies/refreshToken.strategy";
 import { UsersModule } from "../users/users.module";
 
@@ -29,7 +28,6 @@ import { UsersModule } from "../users/users.module";
   providers: [
     AuthService, 
     JwtStrategy,
-    LocalStrategy, 
     RefreshJwtStrategy,
     AbilityFactory,
 
@@ -40,7 +38,6 @@ import { UsersModule } from "../users/users.module";
     JwtModule, 
     AbilityFactory, 
     JwtStrategy,
-    LocalStrategy,
   ],
 })
 export class AuthModule {}

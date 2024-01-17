@@ -1,10 +1,9 @@
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
   HttpCode,
-  HttpException,
+  
   HttpStatus,
   Post,
   Req,
@@ -14,12 +13,8 @@ import {
 import { AuthService } from "./auth.service";
 import { LoginDto } from "./dto/login.dto";
 import { Request } from "express";
-import { AdminsService } from "../admins/admin/admins.service";
 import { Public } from "./decorators/public.decorator";
 import { SkipThrottle } from "@nestjs/throttler";
-import { TokenService } from "../admins/token/token.service";
-import * as bcrypt from "bcrypt";
-import { JwtService } from "@nestjs/jwt";
 import { ApiResponse, ApiTags } from "@nestjs/swagger";
 import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 
@@ -27,10 +22,7 @@ import { JwtAuthGuard } from "./guards/jwt-auth.guard";
 @Controller("auth")
 export class AuthController {
   constructor(
-    private authService: AuthService,
-    private _adminsService: AdminsService,
-    private tokenService: TokenService,
-    private jwtService: JwtService,
+    private _authService: AuthService,
   ) {}
 
   /**
@@ -50,58 +42,7 @@ export class AuthController {
     @Req() request: Request,
     // @Res({ passthrough: true }) response: Response,
   ): Promise<any> {
-    try {
-      // return await this.authService.login(credential, request);
-
-      const user = await this._adminsService.findByUsernameOrEmail(
-        credential.username,
-      );
-
-      if (!user) {
-        throw new Error("invalid credentials");
-      }
-
-      if (!(await bcrypt.compare(credential.password, user.password))) {
-        throw new Error("Password is incorrect");
-      }
-
-      if (user.isActive == false) {
-        throw new Error("Your Have Been Blocked. Please Contact Admin");
-      }
-
-      const payload = {
-        // username: user.username,
-        // email: user.email,
-        sub: user.id,
-      };
-
-      const token = await this.jwtService.signAsync(payload);
-
-      // 1d  = 1 day = 24 hours
-
-      let ip =
-        request.headers["x-forwarded-for"] || request.socket.remoteAddress;
-
-      // convert ip to string
-      ip = ip.toString();
-
-      try {
-        await this.tokenService.create({
-          token: token,
-          admin: user,
-          ip: ip,
-          userAgent: request.headers["user-agent"],
-          expires_at: new Date(new Date().getTime() + 24 * 60 * 60 * 1000),
-        });
-      } catch (error) {
-        // console.log(error);
-        throw new BadRequestException("Failed to create token");
-      }
-
-      return { access_token: token };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.BAD_REQUEST);
-    }
+    return await this._authService.login(credential, request);
   }
 
   @SkipThrottle()
@@ -113,11 +54,8 @@ export class AuthController {
   })
   @Get("profile")
   async getProfile(@Req() req: Request) {
-    const id = req.user["id"] as number;
-
-    const user = await this._adminsService.findById(id);
-
-    return user;
+    return await this._authService.getProfile(req);
+    
   }
 
   @SkipThrottle()
@@ -128,9 +66,8 @@ export class AuthController {
     description: "Verify Successful",
   })
   @Get("verify")
-  async me() {
-    return {
-      message: "success",
-    };
+  async verify(@Req() req: Request) {
+    return await this._authService.verifyToken(req);
+    
   }
 }

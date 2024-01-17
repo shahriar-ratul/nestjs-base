@@ -7,18 +7,18 @@ import { AdminsService } from "../admins/admin/admins.service";
 import { JwtService } from "@nestjs/jwt";
 import { LoginDto } from "./dto/login.dto";
 import { TokenService } from "../admins/token/token.service";
-
+import { Request } from "express";
 
 @Injectable()
 export class AuthService {
   constructor(
-    private adminsService: AdminsService,
+    private _adminsService: AdminsService,
     private jwtService: JwtService,
     private tokenService: TokenService,
   ) {}
 
   async login(credential: LoginDto, request): Promise<any> {
-    const user = await this.adminsService.findByUsernameOrEmail(
+    const user = await this._adminsService.findByUsernameOrEmail(
       credential.username,
     );
 
@@ -27,7 +27,11 @@ export class AuthService {
     }
 
     if (!(await bcrypt.compare(credential.password, user.password))) {
-      throw new Error("invalid credentials");
+      throw new Error("Password is incorrect");
+    }
+
+    if (user.isActive == false) {
+      throw new Error("Your Have Been Blocked. Please Contact Admin");
     }
 
     const payload = {
@@ -40,8 +44,12 @@ export class AuthService {
 
     // 1d  = 1 day = 24 hours
 
-    const ip =
+    let ip =
       request.headers["x-forwarded-for"] || request.socket.remoteAddress;
+
+    // convert ip to string
+    ip = ip.toString();
+
 
     try {
       await this.tokenService.create({
@@ -74,7 +82,7 @@ export class AuthService {
   }
 
   async validateUser(email: string, password: string) {
-    const user = await this.adminsService.findByEmail(email);
+    const user = await this._adminsService.findByEmail(email);
     if (!user) {
       throw new Error('User not found');
     }
@@ -82,8 +90,6 @@ export class AuthService {
       password,
       user.password,
     );
-
-    console.log('isPasswordMatching', isPasswordMatching);
 
     if (!isPasswordMatching) {
       throw new Error('Invalid credentials');
@@ -100,4 +106,32 @@ export class AuthService {
 
     return { exp };
   }
+
+
+  async getProfile(req:Request): Promise<any> {
+    try {
+      const id = req.user["id"] as number;
+      const user = await this._adminsService.findById(id);
+
+      return user;
+    }catch (error) {
+      throw new Error("Invalid Token");
+    }
+  }
+
+  async verifyToken(req:Request): Promise<any> {
+    
+    const id = req.user["id"] as number;
+    const user = await this._adminsService.findById(id);
+
+    if (!user) {
+      throw new Error("invalid credentials");
+    }
+
+    return {
+      message: "success",
+    };
+  }
+
+
 }

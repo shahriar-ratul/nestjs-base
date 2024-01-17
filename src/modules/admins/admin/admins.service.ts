@@ -31,9 +31,6 @@ export class AdminsService {
     const data = await this._adminRepository.findAndCount({
       relations: [
         "roles",
-        "images",
-        "owner",
-        "employee"
 
       ],
       withDeleted: false,
@@ -120,9 +117,6 @@ export class AdminsService {
       where: { id },
       relations: [
         "roles",
-        "images",
-        "owner",
-        "employee"
         ],
     });
 
