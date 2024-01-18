@@ -1,9 +1,9 @@
 import { Factory, Seeder } from "typeorm-seeding";
 import { DataSource } from "typeorm";
-import { Admin } from "./../../modules/admins/entities/Admin.entity";
+import { Admin } from "../../modules/admins/entities/Admin.entity";
 import { hash } from "bcrypt";
-import { Role } from "./../../modules/admins/entities/Role.entity";
-import { Permission } from "./../../modules/admins/entities/Permission.entity";
+import { Role } from "../../modules/admins/entities/Role.entity";
+
 
 export default class AdminDatabaseSeed implements Seeder {
   public async run(factory: Factory, dataSource: DataSource): Promise<void> {
@@ -21,7 +21,10 @@ export default class AdminDatabaseSeed implements Seeder {
 
     // Insert only one record with this username.
     if (!item) {
-      await repository.insert([data]);
+      await repository.save({
+        ...data,
+        isActive: true,
+      });
     }
 
     const role = await dataSource
@@ -44,19 +47,7 @@ export default class AdminDatabaseSeed implements Seeder {
         admin.roles = [role];
         await repository.save(admin);
 
-        // add permissions to role
-        const permissions = await dataSource.getRepository(Permission).find();
-
-        if (permissions) {
-          // await repository
-          //   .createQueryBuilder()
-          //   .relation(Role, "permissions")
-          //   .of(role)
-          //   .add(permissions);
-
-          role.permissions = permissions;
-          await dataSource.getRepository(Role).save(role);
-        }
+       
       }
     }
 
