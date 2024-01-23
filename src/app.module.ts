@@ -86,7 +86,6 @@ import { AdminsModule } from './modules/admins/admins.module';
       useClass: JwtAuthGuard,
     },
 
-    AppService,
     Reflector,
   ],
   exports: [

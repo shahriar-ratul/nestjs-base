@@ -31,7 +31,6 @@ export class AuthController {
   @SkipThrottle()
   @HttpCode(HttpStatus.OK)
   @Post("login")
-  @ApiTags("login")
   @ApiResponse({
     status: 200,
     description: "Login Successful",
@@ -47,7 +46,6 @@ export class AuthController {
 
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
-  @ApiTags("profile")
   @ApiResponse({
     status: 200,
     description: "Get Profile Successful",
@@ -60,7 +58,6 @@ export class AuthController {
 
   @SkipThrottle()
   @UseGuards(JwtAuthGuard)
-  @ApiTags("verify")
   @ApiResponse({
     status: 200,
     description: "Verify Successful",

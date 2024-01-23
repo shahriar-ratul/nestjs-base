@@ -13,8 +13,14 @@ export class RefreshJwtStrategy extends PassportStrategy(
     });
   }
 
+  // async validate(payload: any) {
+  //   const { email, sub } = payload;
+  //   return { email, password: sub.password };
+  // }
+
   async validate(payload: any) {
-    const { email, sub } = payload;
-    return { email, password: sub.password };
+    return {
+      id: payload.sub,
+    };
   }
 }
